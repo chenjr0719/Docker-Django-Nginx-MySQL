@@ -32,15 +32,9 @@ RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysq
 COPY uwsgi.ini /home/django/
 COPY uwsgi_params /home/django/
 
-# Create django project
-RUN mkdir -p /home/django/website/
-RUN django-admin startproject website /home/django/website
-
-# Create model_example app
-RUN mkdir -p /home/django/website/model_example/
-RUN django-admin startapp model_example /home/django/website/model_example/
-COPY models.py /home/django/website/model_example/
-COPY admin.py /home/django/website/model_example/
+# Model_example content
+COPY admin.py /home/django/
+COPY models.py /home/django/
 
 COPY start_model_example.sh /home/django/
 

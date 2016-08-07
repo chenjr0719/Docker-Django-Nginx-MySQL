@@ -2,7 +2,7 @@
 
 SETTING_PATH=`find /home/django/website -name settings.py`
 
-if [ ! grep -q "model_example" $SETTING_PATH ] ; then
+if ! grep -q "model_example" $SETTING_PATH ; then
 
     # Start mysql
     /usr/bin/mysqld_safe && sleep 5s
@@ -20,9 +20,19 @@ if [ ! grep -q "model_example" $SETTING_PATH ] ; then
     mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
     mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE django; GRANT ALL PRIVILEGES ON django.* TO 'django'@'localhost' IDENTIFIED BY '$MYSQL_DJANGO_PASSWORD'; FLUSH PRIVILEGES;"
 
+    # Install MySQL adapter for Python
     pip3 install mysqlclient
 
-    # Modify Django settings.py
+    # Create django project
+    mkdir -p /home/django/website/
+    django-admin startproject website /home/django/website
+
+    # Create model_example app
+    mkdir -p /home/django/website/model_example/
+    django-admin startapp model_example /home/django/website/model_example/
+    mv /home/django/admin.py /home/django/website/model_example/
+    mv /home/django/models.py /home/django/website/model_example/
+
     # Add model_example app
     sed -i "s|'django.contrib.staticfiles'|'django.contrib.staticfiles',\n    'model_example'|g" $SETTING_PATH
 
