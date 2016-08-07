@@ -2,7 +2,7 @@
 
 SETTING_PATH=`find /home/django/ -name settings.py`
 
-if [ -f $SETTING_PATH ] ; then
+if [ -z "$SETTING_PATH" ] ; then
 
     # Create django project
     mkdir -p /home/django/website/
