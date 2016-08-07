@@ -26,15 +26,21 @@ Then, run this image:
 sudo docker run -itd -p 80:80 chenjr0719/django-nginx-mysql
 ```
 
-Now, you can see the initial project of **Django** at http://127.0.0.1
+Wait a minute, you can see the initial project of **Django** at http://127.0.0.1
 
-You can also change it to a different **port**.
+### Check it work properly
 
-For example, use 8080:
+You can check is **Django** work properly with **MySQL Server** by:
 
-```
-sudo docker run -itd -p 8080:80 chenjr0719/django-nginx-mysql
-```
+1. First, query your **Django Admin Passwor**:
+
+   ```
+   sudo docker exec -it $CONTAINER_ID cat /home/django/password.txt
+   ```
+
+2. Access http://127.0.0.1/admin and log in as Username: admin.
+
+3. Choose **Model_Example** to test **CRUD** function.
 
 ## Use your Django project?
 
