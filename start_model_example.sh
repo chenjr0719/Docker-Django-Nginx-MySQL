@@ -2,7 +2,7 @@
 
 SETTING_PATH=`find /home/django/website -name settings.py`
 
-if [ ! grep -q "model_exap" $SETTING_PATH ] ; then
+if [ ! grep -q "model_example" $SETTING_PATH ] ; then
 
     # Start mysql
     /usr/bin/mysqld_safe && sleep 5s
