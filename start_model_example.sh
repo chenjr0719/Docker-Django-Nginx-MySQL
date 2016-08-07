@@ -1,8 +1,20 @@
 #!/bin/bash
 
-SETTING_PATH=`find /home/django/website -name settings.py`
+SETTING_PATH=`find /home/django/ -name settings.py`
 
-if ! grep -q "model_example" $SETTING_PATH ; then
+if [ ! -f $SETTING_PATH ] ; then
+
+    # Create django project
+    mkdir -p /home/django/website/
+    django-admin startproject website /home/django/website
+
+    # Create model_example app
+    mkdir -p /home/django/website/model_example/
+    django-admin startapp model_example /home/django/website/model_example/
+    mv /home/django/admin.py /home/django/website/model_example/
+    mv /home/django/models.py /home/django/website/model_example/
+
+    SETTING_PATH=`find /home/django/ -name settings.py`
 
     # Start mysql
     /usr/bin/mysqld_safe && sleep 5s
@@ -22,16 +34,6 @@ if ! grep -q "model_example" $SETTING_PATH ; then
 
     # Install MySQL adapter for Python
     pip3 install mysqlclient
-
-    # Create django project
-    mkdir -p /home/django/website/
-    django-admin startproject website /home/django/website
-
-    # Create model_example app
-    mkdir -p /home/django/website/model_example/
-    django-admin startapp model_example /home/django/website/model_example/
-    mv /home/django/admin.py /home/django/website/model_example/
-    mv /home/django/models.py /home/django/website/model_example/
 
     # Add model_example app
     sed -i "s|'django.contrib.staticfiles'|'django.contrib.staticfiles',\n    'model_example'|g" $SETTING_PATH
