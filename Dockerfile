@@ -36,6 +36,7 @@ COPY uwsgi_params /home/django/
 COPY admin.py /home/django/
 COPY models.py /home/django/
 
+# Copy initialization scripts
 COPY start_model_example.sh /home/django/
 
 EXPOSE 80
