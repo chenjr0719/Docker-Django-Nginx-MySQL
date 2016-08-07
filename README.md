@@ -32,7 +32,7 @@ Wait a minute, you can see the initial project of **Django** at http://127.0.0.1
 
 You can check is **Django** work properly with **MySQL Server** by:
 
-1. First, query your **Django Admin Passwor**:
+1. First, query your **Django Admin Password**:
 
    ```
    sudo docker exec -it $CONTAINER_ID cat /home/django/password.txt
