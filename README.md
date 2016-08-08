@@ -14,7 +14,7 @@ You can build this **Dockerfile** yourself:
 sudo docker build -t "chenjr0719/django-nginx-mysql" .
 ```
 
-Or, just pull my image:
+Or, just pull my **image**:
 
 ```
 sudo docker pull chenjr0719/django-nginx-mysql
