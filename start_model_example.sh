@@ -17,7 +17,7 @@ if [ -z "$SETTING_PATH" ] ; then
     SETTING_PATH=`find /home/django/ -name settings.py`
 
     # Start mysql
-    /usr/bin/mysqld_safe && sleep 10s
+    /usr/bin/mysqld_safe & sleep 10s
 
     # Set password
     MYSQL_ROOT_PASSWORD=`pwgen -c -n -1 12`
