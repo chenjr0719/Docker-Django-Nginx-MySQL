@@ -2,9 +2,8 @@
 
 Dockerfile for Django with uWSGI, Nginx, MySQL, Python 3.
 
-## About this Image/Dockerfile
-
 This **Image/Dockerfile** aims to create a container for **Django** with **MySQL**, **Python 3** and using **uWSGI**, **Nginx** to hosting.
+
 
 ## How to use?
 
@@ -42,52 +41,32 @@ You can check is **Django** work properly with **MySQL Server** by:
 
 3. Choose **Model_Example** to test **CRUD** function.
 
+
 ## Use your Django project?
 
 If you want to use your **Django** project which you already developed, use following command:
 
 ```
-sudo docker run -itd -p 80:80 -v $YOUR_PROJECET_DIR:/home/django/website chenjr0719/django-nginx-mysql
+sudo docker run -itd -p 80:80 -v $PROJECET_DIR:/home/django/website chenjr0719/django-nginx-mysql
 ```
 
-### Modify Django setting with MySQL
+### Project requirements
 
-You have to make sure that your **settings.py** is already set all setting with **MySQL**.
+Make sure you already add your **requirements** module at $PROJECET_DIR/requirements.txt.
 
-1. Enter to your container:
+This image will auto install all requirements module in this file.
 
-  ```
-  sudo docker exec -it $CONTAINER_ID bash
-  ```
+### Data migration
 
-2. Query password of **MySQL**:
+If you are using **SQLite**, this image will auto migrate your data into **MySQL Server**.
 
-  ```
-  cat /home/django/password.txt
-  ```
+But, if you are using other database, you need to **dump** data yourself.
 
-3. Modify **settings.py**:
+Using this command:
 
-  ```
-  SETTING_PATH=`find /home/django/website -name settings.py`
-  sed -i "s|'django.contrib.staticfiles'|'django.contrib.staticfiles',\n '$YOUR_APP_NAME'|g" $SETTING_PATH
-  sed -i "s|django.db.backends.sqlite3|django.db.backends.mysql|g" $SETTING_PATH
-  sed -i "s|os.path.join(BASE_DIR, 'db.sqlite3')|'django',\n 'USER': 'django',\n 'PASSWORD': '$MYSQL_DJANGO_PASSWORD'|g" $SETTING_PATH
-  ```
-
-4. Let **django** create tables automatically:
-
-  ```
-  python3 /home/django/website/manage.py makemigrations
-  python3 /home/django/website/manage.py migrate
-  ```
-
-5. Exit your container and restart it:
-
-  ```
-  exit
-  sudo docker restart $CONTAINER_ID
-  ```
+```
+python manage.py dumpdata -e sessions -e admin -e contenttypes -e auth --natural-primary --natural-foreign --indent=4 > $PROJECT_DIR/dump.json
+```
 
 ### Modify project name
 
@@ -99,6 +78,7 @@ you need modify the setting of **uwsgi.ini** in your container:
 sudo docker exec $CONTAINER_ID sed -i "s|module=website.wsgi:application|module=$PROJECT_NAME.wsgi:application|g" /home/django/uwsgi.ini
 sudo docker restart $CONTAINER_ID
 ```
+
 
 ## About Django static files
 
@@ -137,7 +117,7 @@ If you want to use **Django** static files, you have to:
 
 4. If you want to use different name of static folder, you need to modify the setting of **nginx-site.conf** in your container.
 
-  You can this command:
+  You can use this command:
 
   ```
   sed -i "s|/home/django/website/static|/home/django/website/$STATIC_FOLDER_NAME|g" /etc/nginx/sites-available/default
