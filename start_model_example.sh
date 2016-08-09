@@ -2,19 +2,30 @@
 
 SETTING_PATH=`find /home/django/ -name settings.py`
 
+# Check is there already exist any django project
 if [ -z "$SETTING_PATH" ] ; then
 
-    # Create django project
+    # Create new django project
     mkdir -p /home/django/website/
     django-admin startproject website /home/django/website
 
-    # Create model_example app
-    mkdir -p /home/django/website/model_example/
-    django-admin startapp model_example /home/django/website/model_example/
-    mv /home/django/admin.py /home/django/website/model_example/
-    mv /home/django/models.py /home/django/website/model_example/
-
     SETTING_PATH=`find /home/django/ -name settings.py`
+
+else
+
+    # Install requirements
+    if [ -f /home/django/website/requirements.txt ]; then
+        pip3 install -r /home/django/website/requirements.txt
+    fi
+
+    # Backup data from SQLite
+    if [ -f /home/django/website/db.sqlite3 ] ; then
+        python3 /home/django/website/manage.py dumpdata -e sessions -e admin -e contenttypes -e auth --natural-primary --natural-foreign --indent=4 > /home/django/dump.json
+    fi
+
+fi
+
+if [ ! -f /home/django/password.txt ] ; then
 
     # Start mysql
     /usr/bin/mysqld_safe & sleep 10s
@@ -35,6 +46,12 @@ if [ -z "$SETTING_PATH" ] ; then
     # Install MySQL adapter for Python
     pip3 install mysqlclient
 
+    # Create model_example app
+    mkdir -p /home/django/website/model_example/
+    django-admin startapp model_example /home/django/website/model_example/
+    mv /home/django/admin.py /home/django/website/model_example/
+    mv /home/django/models.py /home/django/website/model_example/
+
     # Add model_example app
     sed -i "s|'django.contrib.staticfiles'|'django.contrib.staticfiles',\n    'model_example'|g" $SETTING_PATH
 
@@ -50,6 +67,10 @@ if [ -z "$SETTING_PATH" ] ; then
     python3 /home/django/website/manage.py migrate
     echo yes | python3 /home/django/website/manage.py collectstatic
     echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', '$DJANGO_ADMIN_PASSWORD')" | python3 /home/django/website/manage.py shell
+
+    if [ -f /home/django/dump.json ] ; then
+        python3 /home/django/website/manage.py loaddata /home/django/dump.json
+    fi
 
     killall mysqld
     
