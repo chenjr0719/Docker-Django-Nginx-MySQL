@@ -26,7 +26,7 @@ COPY nginx-site.conf /etc/nginx/sites-available/default
 COPY supervisor.conf /etc/supervisor/conf.d/
 
 # mysql config
-RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+COPY my.cnf /etc/mysql/
 
 # uWSGI config
 COPY uwsgi.ini /home/django/

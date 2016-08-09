@@ -41,7 +41,7 @@ if [ ! -f /home/django/password.txt ] ; then
     # Initialize MySQL
     mysqladmin -u root password $MYSQL_ROOT_PASSWORD
     mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE django; GRANT ALL PRIVILEGES ON django.* TO 'django'@'localhost' IDENTIFIED BY '$MYSQL_DJANGO_PASSWORD'; FLUSH PRIVILEGES;"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE django DEFAULT CHARACTER SET utf8; GRANT ALL PRIVILEGES ON django.* TO 'django'@'localhost' IDENTIFIED BY '$MYSQL_DJANGO_PASSWORD'; FLUSH PRIVILEGES;"
 
     # Install MySQL adapter for Python
     pip3 install mysqlclient
